@@ -62,8 +62,8 @@ describe('mock mode', function() {
     }, function(res) {
       onEnd(res, function(data) {
         var delta = Date.now() - startTime;
-        assert.equal(delta > 40, true);
-        assert.equal(delta < 60, true);
+        assert.equal(delta > 30, true);
+        assert.equal(delta < 80, true);
         done();
       });
     });
@@ -113,7 +113,7 @@ describe('mock mode', function() {
       onEnd(res, function(data) {
         assert.equal(res.statusCode, 404);
         assert.equal(res.req.path, '/readRequest/thatDoesntExist');
-        assert.equal(data, 'No mock exists for /readRequest/thatDoesntExist - (mocksToRead/mockTest/9ae58033c4010180f34fcabb83cd463466b8874c.json)');
+        assert.equal(data, 'No mock exists for /readRequest/thatDoesntExist - (mocksToRead\\mockTest\\readRequest\\thatDoesntExist\\GET.json)');
         done();
       });
     });
@@ -156,6 +156,32 @@ describe('mock mode', function() {
 
           done();
         });
+      });
+    });
+    request.end();
+  });
+
+  it('can mock a post response', function (done) {
+    prism.create({
+      name: 'mockTest',
+      mode: 'mock',
+      mocksPath: './mocksToRead',
+      context: '/readRequest',
+      host: 'localhost',
+      port: 8090
+    });
+
+    var request = http.request({
+      method: 'POST',
+      host: 'localhost',
+      path: '/readRequest',
+      port: 9000
+    }, function (res) {
+      onEnd(res, function (data) {
+        assert.equal(res.statusCode, 200);
+        assert.equal(res.req.path, '/readRequest');
+        assert.equal(data, 'post response');
+        done();
       });
     });
     request.end();

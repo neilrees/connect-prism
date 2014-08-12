@@ -20,10 +20,15 @@ describe('mock & record mode', function() {
 
   // clean up files after spec runs
   after(function() {
-    var recordResponse = 'mocksToRead/mockRecordTest/97bb3894d4aa3418d821bdc6f3a9a1ba792739e8.json';
-    if (fs.existsSync(recordResponse)) {
-      fs.unlinkSync(recordResponse);
+
+    function deleteFile(file) {
+        if (fs.existsSync(file)) {
+            fs.unlinkSync(file);
+        }
     }
+
+    deleteFile('mocksToRead/mockRecordTest/test/GET.json');
+    deleteFile('mocksToRead/mockRecordTest/json/GET.json');
   });
 
   it('can mock a response', function(done) {
@@ -42,7 +47,7 @@ describe('mock & record mode', function() {
 
     var pathToResponse = utils.getMockPath(proxy, '/test');
 
-    assert.equal(fs.existsSync(pathToResponse), true);
+    assert.equal(fs.existsSync(pathToResponse), false);
 
     var request = http.request({
       host: 'localhost',
@@ -50,7 +55,7 @@ describe('mock & record mode', function() {
       port: 9000
     }, function(res) {
       onEnd(res, function(data) {
-
+        assert.equal(fs.existsSync(pathToResponse), true);
         assert.equal(res.req.path, '/test');
         done();
       });
