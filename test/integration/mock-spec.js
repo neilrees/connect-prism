@@ -186,4 +186,77 @@ describe('mock mode', function() {
     });
     request.end();
   });
+
+  it('can mock a wildcarded response', function (done) {
+    prism.create({
+      name: 'wildcardMockTest',
+      mode: 'mock',
+      mocksPath: './mocksToRead',
+      context: '/',
+      host: 'localhost',
+      port: 8090
+    });
+
+    var request = http.request({
+      host: 'localhost',
+      path: '/foo',
+      port: 9000
+    }, function (res) {
+      onEnd(res, function (data) {
+        assert.equal(res.statusCode, 200);
+        assert.equal(data, 'wildcard response');
+        done();
+      });
+    });
+    request.end();
+  });
+
+  it('can mock a wildcarded response to a specific resource', function (done) {
+    prism.create({
+      name: 'wildcardMockTest',
+      mode: 'mock',
+      mocksPath: './mocksToRead',
+      context: '/',
+      host: 'localhost',
+      port: 8090
+    });
+
+    var request = http.request({
+      host: 'localhost',
+      path: '/foo/a',
+      port: 9000
+    }, function (res) {
+      onEnd(res, function (data) {
+        assert.equal(res.statusCode, 200);
+        assert.equal(data, 'a response');
+        done();
+      });
+    });
+    request.end();
+  });
+
+  it('can mock a response to a specific resource', function (done) {
+    prism.create({
+      name: 'wildcardMockTest',
+      mode: 'mock',
+      mocksPath: './mocksToRead',
+      context: '/',
+      host: 'localhost',
+      port: 8090
+    });
+
+    var request = http.request({
+      host: 'localhost',
+      path: '/bar',
+      port: 9000
+    }, function (res) {
+      onEnd(res, function (data) {
+        assert.equal(res.statusCode, 200);
+        assert.equal(data, 'specific bar response');
+        done();
+      });
+    });
+    request.end();
+  });
+
 });

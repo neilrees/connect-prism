@@ -1,0 +1,6 @@
+{
+  "requestUrl": "/anything/a",
+  "contentType": "text/plain",
+  "statusCode": 200,
+  "data": "a response"
+}
